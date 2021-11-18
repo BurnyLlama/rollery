@@ -47,5 +47,5 @@ export default function lexer(command, errorCallback) {
         break
     }
 
-    return error ? null : tokens
+    return error ? [null] : tokens
 }

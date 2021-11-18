@@ -8,7 +8,7 @@ import https from 'https'
  * @param {Array} params The params to be used.
  */
 function ROLLER(msg, action, params) {
-    msg.channel.send(fs.readFileSync('help.md', { encoding: 'utf-8' })).catch(err => null)
+    msg.channel.send("SNART!")
 }
 
 /**
@@ -22,7 +22,8 @@ function MOTIVERA(msg) {
 
         res.on('end', () => {
             const quote = JSON.parse(data)
-            msg.reply(`> ${quote[0].q}\n-- ${quote[0].a}`)
+            msg.member.send(`> ${quote[0].q}\n-- ${quote[0].a}`)
+            msg.delete()
         })
     })
 }

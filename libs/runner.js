@@ -16,5 +16,9 @@ export default function runner(statement, msg) {
         msg.reply(`:octagonal_sign: **ERROR:** Det verkar som att du använde kommandot fel...\n\n:thinking: Kommandot ${command} används: ${MAN_PAGES[command]}`)
     }
 
-    commands[command](msg, "honk", "honk")
+    const action = statement.find(e => e.type === 'ACTION_WORD').value
+    const params = statement.filter(e => e.type === 'PARAM').map(e => e.value)
+
+    console.dir({ action, params }, { depth: null })
+    commands[command](msg, action, params)
 }
