@@ -7,7 +7,7 @@
     let str = ""
     let cursor = originCursor + 1
 
-    while (!string[cursor].match(/['"]/)) {
+    while (cursor < string.length && !string[cursor].match(/['"]/)) {
         str += string[cursor]
         ++cursor
     }

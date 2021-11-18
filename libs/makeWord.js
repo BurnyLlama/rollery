@@ -7,7 +7,7 @@ export default function makeCommand(string, originCursor) {
     let word = ""
     let cursor = originCursor
 
-    while (string[cursor].match(/[A-ZÅÄÖ0-9]/)) {
+    while (cursor < string.length && string[cursor].match(/[A-ZÅÄÖ0-9]/)) {
         word += string[cursor]
         ++cursor
     }

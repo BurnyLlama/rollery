@@ -12,6 +12,7 @@ import { TYPES } from './rules.js'
 export default function lexer(command, errorCallback) {
     let tokens = []
     let cursor = 0
+    let error = false
 
     while (cursor < command.length) {
         const char = command[cursor]
@@ -19,7 +20,6 @@ export default function lexer(command, errorCallback) {
         if (TYPES[char]) {
             tokens.push(createToken(TYPES[char], null))
             ++cursor
-            console.log({ cursor, len: command.length })
             continue
         }
 
@@ -27,7 +27,6 @@ export default function lexer(command, errorCallback) {
             const word = makeWord(command, cursor)
             tokens.push(createToken("WORD", word))
             cursor += word.length
-            console.log({ word, cursor, len: command.length })
             continue
         }
 
@@ -35,7 +34,6 @@ export default function lexer(command, errorCallback) {
             const str = makeStr(command, cursor)
             tokens.push(createToken("STR", str))
             cursor += str.length + 2
-            console.log({ str, cursor, len: command.length })
             continue
         }
 
@@ -44,9 +42,10 @@ export default function lexer(command, errorCallback) {
             continue
         }
 
-        errorCallback(`:warning: **ERROR:** Felaktigt tecken '${char}' (position ${cursor + 1})!`)
+        error = true
+        errorCallback(`:warning: **ERROR:** Okänt tecken '${char}' (position ${cursor + 1})!`)
         break
     }
 
-    return tokens
+    return error ? null : tokens
 }

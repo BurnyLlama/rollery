@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv'
 import { Client, Intents } from 'discord.js'
 import lexer from './libs/lexer.js'
+import parser from './libs/parser.js'
 
 
 loadEnv()
@@ -18,11 +19,15 @@ client.on('messageCreate', msg => {
     if (!isCommand) return "Not a command!"
 
     const rawMsg = msg.toString()                                   // *- I don't see why I couldn't combine these regexes... :/
-    const command = rawMsg.replace(RegExp(`^${CMD_PREFIX}`, "mg"), "").replace(/^\s*/g, "")
+    const command = rawMsg.replace(RegExp(`^${CMD_PREFIX}`), "").replace(/^\s*/g, "")
 
     const tokens = lexer(command, err => msg.channel.send(err))
+    if (!tokens[0]) return console.log("Error while lexing...")
 
-    console.log({ isAdmin, isCommand, rawMsg, command, tokens })
+    const statement = parser(tokens, err => msg.channel.send(err))
+
+
+    console.dir({ isAdmin, isCommand, rawMsg, command, tokens, statement }, { depth: null })
 })
 
 client.login(process.env.TOKEN)
