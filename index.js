@@ -2,6 +2,7 @@ import { config as loadEnv } from 'dotenv'
 import { Client, Intents } from 'discord.js'
 import lexer from './libs/lexer.js'
 import parser from './libs/parser.js'
+import runner from './libs/runner.js'
 
 
 loadEnv()
@@ -25,9 +26,9 @@ client.on('messageCreate', msg => {
     if (!tokens[0]) return console.log("Error while lexing...")
 
     const statement = parser(tokens, err => msg.channel.send(err))
+    if (!statement[0]) return console.log("Error while parsing...")
 
-
-    console.dir({ isAdmin, isCommand, rawMsg, command, tokens, statement }, { depth: null })
+    runner(statement, msg)
 })
 
 client.login(process.env.TOKEN)

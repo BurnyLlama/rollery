@@ -14,7 +14,6 @@ export default function parser(tokens, errorCallback) {
 
     while (cursor < tokens.length) {
         const token = tokens[cursor]
-        console.log({ cursor, token })
         
         if (token.type === 'WORD') {
             const wordType = WORDS[token.value]

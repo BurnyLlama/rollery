@@ -11,6 +11,7 @@ export const TYPES = {
 export const WORDS = {
     'ROLLER':   'KEY_WORD',
     'HJÄLP':    'KEY_WORD',
+    'MOTIVERA': 'KEY_WORD',
 
     'GE':       'ACTION_WORD',
     'TA':       'ACTION_WORD',
@@ -18,4 +19,16 @@ export const WORDS = {
     'AVSKAFFA': 'ACTION_WORD',
 
     'ALLA':     'SELECT_WORD',
+}
+
+export const RECIPES = {
+    'ROLLER':   ['KEY_WORD', 'ACTION_WORD', 'PARAM', 'PARAM'],
+    'HJÄLP':    ['KEY_WORD'],
+    'MOTIVERA': ['KEY_WORD'],
+}
+
+export const MAN_PAGES = {
+    'ROLLER':   "ROLLER <GE | TA | TILLDELA | AVSKAFFA> <KLASSKOD> <ROLL>",
+    'HJÄLP':    "HJÄLP",
+    'MOTIVERA': "MOTIVERA",
 }
