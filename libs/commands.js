@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
 import fs from 'fs'
 import https from 'https'
+import { aggregateUsers } from './discordWrapper.js'
 
 /**
  * @param {Message} msg The message to access server data.
@@ -8,7 +9,25 @@ import https from 'https'
  * @param {Array} params The params to be used.
  */
 function ROLLER(msg, action, params) {
-    msg.channel.send("SNART!")
+    const actions = {
+        'GE': 'add',
+        'TA': 'remove'
+    }
+
+    const users = aggregateUsers(msg.guild, params[0])
+    
+    for (const role of params[1]) {
+        if (!msg.guild.roles.cache.some(e => e.name === role)) {
+            msg.channel.send(`:octagonal_sign: **ERROR:** Rollen ${role} finns inte! (Om du spefierade andra roller så läggs de andra rollerna till.)`)
+            continue
+        }
+
+        for (const user of users) {
+            user.roles[actions[action]](msg.guild.roles.cache.find(e => e.name === role))
+        }
+    }
+
+    msg.channel.send(`Hittade användare: ${users.map(user => user.displayName).join(", ")}`)
 }
 
 /**

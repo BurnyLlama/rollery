@@ -18,7 +18,7 @@ export const WORDS = {
     'TILLDELA': 'ACTION_WORD',
     'AVSKAFFA': 'ACTION_WORD',
 
-    'ALLA':     'SELECT_WORD',
+    'ALLA':     'SELECT_ALL',
 }
 
 export const RECIPES = {

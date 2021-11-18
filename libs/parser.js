@@ -23,7 +23,7 @@ export default function parser(tokens, errorCallback) {
                 break
             }
 
-            statement.push(createToken(wordType, token.value))
+            statement.push(createToken(wordType === 'SELECT_ALL' ? 'PARAM' : wordType, wordType === 'SELECT_ALL' ? [ "" ] : token.value))
             ++cursor
             continue
         }
