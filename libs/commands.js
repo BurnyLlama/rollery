@@ -59,7 +59,6 @@ function HJÄLP(msg) {
 
 export default {
     ROLLER,
-    R: ROLLER,
     HJÄLP,
     MOTIVERA
 }

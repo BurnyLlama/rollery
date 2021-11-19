@@ -1,3 +1,5 @@
+export const WORD_CHARS = /[A-ZÅÄÖ0-9?]/
+
 export const TYPES = {
     '(': 'GROUP_BEGIN',
     '[': 'GROUP_BEGIN',
@@ -10,7 +12,26 @@ export const TYPES = {
 
 export const ALIASES = {
     'R': 'ROLLER',
-    'G': 'GE',
+    'ROLL': 'ROLLER',
+    'ROLES': 'ROLLER',
+    'ROLE': 'ROLLER',
+
+    'GIVE': 'GE',
+    'UNGIVE': 'TA',
+    'TAKE': 'TA',
+    'DELETE': 'TA',
+    'DEL': 'TA',
+    'REOVE': 'TA',
+    'RM': 'TA',
+
+    'HELP': 'HJÄLP',
+    'MANUAL': 'HJÄLP',
+    '?': 'HJÄLP',
+
+    'MOTIVATE': 'MOTIVERA',
+    'M': 'MOTIVERA',
+
+    'ALL': 'ALLA',
 }
 
 export const WORDS = {

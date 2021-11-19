@@ -14,6 +14,7 @@ export default function runner(statement, msg) {
 
     if (input !== recipe) {
         msg.reply(`:octagonal_sign: **ERROR:** Det verkar som att du använde kommandot fel...\n\n:thinking: Kommandot ${command} används: ${MAN_PAGES[command]}`)
+        return
     }
 
     const action = statement.find(e => e.type === 'ACTION_WORD')?.value ?? null

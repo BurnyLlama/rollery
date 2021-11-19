@@ -1,7 +1,7 @@
 import createToken from './createToken.js'
 import makeWord from './makeWord.js'
 import makeStr from './makeStr.js'
-import { TYPES } from './rules.js'
+import { TYPES, WORD_CHARS } from './rules.js'
 
 /**
  * This function lexes a string into tokens.
@@ -23,7 +23,7 @@ export default function lexer(command, errorCallback) {
             continue
         }
 
-        if (char.match(/[A-ZÅÄÖ0-9]/)) {
+        if (char.match(WORD_CHARS)) {
             const word = makeWord(command, cursor)
             tokens.push(createToken("WORD", word))
             cursor += word.length
