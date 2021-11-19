@@ -1,5 +1,5 @@
 import createToken from './createToken.js'
-import { WORDS } from './rules.js'
+import { ALIASES, WORDS } from './rules.js'
 
 /**
  * This function parses tokens and turns them into a statement.
@@ -16,14 +16,14 @@ export default function parser(tokens, errorCallback) {
         const token = tokens[cursor]
         
         if (token.type === 'WORD') {
-            const wordType = WORDS[token.value]
+            const wordType = WORDS[ALIASES[token.value] ?? token.value]
 
             if (!wordType) {
                 errorCallback(`:warning: **ERROR:** Okänt ord '${token.value}'!`)
                 break
             }
 
-            statement.push(createToken(wordType === 'SELECT_ALL' ? 'PARAM' : wordType, wordType === 'SELECT_ALL' ? [ "" ] : token.value))
+            statement.push(createToken(wordType === 'SELECT_ALL' ? 'PARAM' : wordType, wordType === 'SELECT_ALL' ? [ "" ] : (ALIASES[token.value] ?? token.value)))
             ++cursor
             continue
         }

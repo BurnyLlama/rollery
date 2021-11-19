@@ -1,9 +1,9 @@
 import { Guild } from 'discord.js'
 
 /**
- * 
- * @param {Guild} server 
- * @param {*} patterns 
+ * @param {Guild} server The server object on which to act.
+ * @param {[string]} patterns An array of strings to match.
+ * @returns {Array} Array of users matching the patterns.
  */
 export function aggregateUsers(server, patterns) {
     let users = []

@@ -8,6 +8,11 @@ export const TYPES = {
     ',': 'GROUP_SEP',
 }
 
+export const ALIASES = {
+    'R': 'ROLLER',
+    'G': 'GE',
+}
+
 export const WORDS = {
     'ROLLER':   'KEY_WORD',
     'HJÄLP':    'KEY_WORD',
