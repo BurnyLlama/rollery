@@ -8,7 +8,7 @@ export default function makeGroup(tokens, cursorOrigin) {
     let group = []
     let cursor = cursorOrigin + 1
 
-    while (cursor < tokens.length && tokens[cursor] !== 'GROUP_END') {
+    while (cursor < tokens.length && tokens[cursor].type !== 'GROUP_END') {
         const token = tokens[cursor]
 
         if (token.type === 'STR')
@@ -17,5 +17,5 @@ export default function makeGroup(tokens, cursorOrigin) {
         ++cursor
     }
 
-    return { group, cursor }
+    return[ group, cursor ]
 }

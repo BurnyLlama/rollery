@@ -36,9 +36,10 @@ export default function parser(tokens, errorCallback) {
         }
 
         if (token.type === 'GROUP_BEGIN') {
-            const { group, curPos } = makeGroup(tokens, cursor)
+            const [ group, curPos ] = makeGroup(tokens, cursor)
+            console.log({ cursor, curPos, group })
             statement.push(createToken('PARAM', group))
-            cursor = curPos + 2
+            cursor = curPos + 1
             continue
         }
 

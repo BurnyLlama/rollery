@@ -6,14 +6,22 @@ import { Guild } from 'discord.js'
  * @returns {Array} Array of users matching the patterns.
  */
 export function aggregateUsers(server, patterns) {
-    let users = []
-
-    for (const pattern of patterns) {
-        const matchedUsers = server.members.cache.filter(user => user.displayName.endsWith(pattern)).values()
-
-        for (const user of matchedUsers)
-            users.push(user)
-    }
-
-    return users
+    return new Promise(
+        resolve => {
+            let users = []
+        
+            server.members.fetch()
+                .then(
+                    async fetchedUsers => {
+                        for (const pattern of patterns) {
+                            const matchedUsers = fetchedUsers.filter(user => user.displayName.endsWith(pattern)).values()
+                            for (const user of matchedUsers)
+                                users.push(user)
+                        }
+        
+                        resolve(users)
+                    }
+                )
+        }
+    )
 }
