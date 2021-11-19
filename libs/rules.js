@@ -60,8 +60,8 @@ export const RECIPES = {
 }
 
 export const MAN_PAGES = {
-    'ROLLER':   "ROLLER <GE | TA | TILLDELA | AVSKAFFA> <KLASSKOD> <ROLL>",
+    'ROLLER':   "ROLLER <GE | TA | TILLDELA | AVSKAFFA> <'Klasskod' | ('Klasskoder')> <'Roll' | ('Roller')>",
     'HJÄLP':    "HJÄLP",
     'MOTIVERA': "MOTIVERA",
-    'KLASS':    "KLASS <KLASSKOD> <NAMN EFTERNAMN>",
+    'KLASS':    "KLASS 'Klasskod' 'Förnamn Efternamn'",
 }

@@ -7,14 +7,12 @@ import runner from './libs/runner.js'
 
 loadEnv()
 
-const ADMIN_ROLE = "rollery_admin"
 const CMD_PREFIX = "%"
 
 const client = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] })
 
 
 client.on('messageCreate', msg => {
-    const isAdmin = msg.member.roles.cache.some(role => role.name === ADMIN_ROLE)
     const isCommand = msg.toString().startsWith(CMD_PREFIX)
 
     if (!isCommand) return "Not a command!"

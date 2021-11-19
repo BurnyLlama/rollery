@@ -1,7 +1,7 @@
 import { Message } from 'discord.js'
 import fs from 'fs'
 import https from 'https'
-import { aggregateUsers } from './discordWrapper.js'
+import { aggregateUsers, isAdmin } from './discordWrapper.js'
 import vault from './vault.js'
 
 /**
@@ -10,6 +10,8 @@ import vault from './vault.js'
  * @param {Array} params The params to be used.
  */
 function ROLLER(msg, action, params) {
+    if (!isAdmin(msg)) return "Not admin."
+
     switch (action) {
         case 'GE':
             aggregateUsers(msg.guild, params[0]).then(
@@ -56,11 +58,10 @@ function ROLLER(msg, action, params) {
 
                 data.classes || (data.classes = {})
                 data.classes[classCode] = params[1]
+                ROLLER(msg, 'GE', [ [ classCode ], params[1] ])
+                msg.channel.send(`:small_blue_diamond: Kommer tilldela \`${classCode}\` rollerna:\n\`\`\`\n${params[1].join(", ")}\n\`\`\``)
 
                 vault.save(data)
-
-                msg.channel.send(`:small_blue_diamond: Kommer tilldela \`${classCode}\` rollerna:\n\`\`\`\n${params[1].join(", ")}\n\`\`\``)
-                ROLLER(msg, 'GE', [ [ classCode ], params[1] ])
             }
 
             break
@@ -71,12 +72,18 @@ function ROLLER(msg, action, params) {
                 let data = vault.open()
     
                 data.classes || (data.classes = {})
+                const classes = data.classes[classCode]
+
+                if (!classes || !classes[0]) {
+                    msg.channel.send(`:warning: **ERROR:** Det finns ingen regel definierad för \`${classCode}\`!\n:bulb: Du kan definiera en regel med \`ROLLER TILLDELA <KLASS> <ROLLER>\`.`)
+                    break
+                }
+
+                ROLLER(msg, 'TA', [ [ classCode ], classes ])
+                msg.channel.send(`:small_orange_diamond: Kommer avskaffa \`${classCode}\` rollerna:\n\`\`\`\n${classes.join(", ")}\n\`\`\``)
+
                 delete data.classes[classCode]
-    
                 vault.save(data)
-    
-                msg.channel.send(`:small_orange_diamond: Kommer avskaffa \`${classCode}\` rollerna:\n\`\`\`\n${params[1].join(", ")}\n\`\`\``)
-                ROLLER(msg, 'TA', [ [ classCode ], params[1] ])
             }
             break
 
@@ -110,15 +117,27 @@ function MOTIVERA(msg) {
 function KLASS(msg, _, params) {
     const [ code, name ] = params
 
+    const data = vault.open()
+    if (!data.classes[code])
+        return msg.channel.send(`:warning: **ERROR:** Klassen ${code} finns inte! Välj någon av: \`${Object.keys(data.classes ?? {}).join("\`, \`")}\``)
+
     msg.member.setNickname(`${name} ${code}`)
-    msg.reply(`Välkommen ${name}!`)
+    for (const role of data.classes[code]) {
+        if (!msg.guild.roles.cache.some(e => e.name === role)) {
+            continue
+        }
+        msg.member.roles.add(msg.guild.roles.cache.find(r => r.name === role))
+    }
+
+    msg.reply(`Välkommen ${name}! Du har tillgång till: \`${data.classes[code].join("\`, \`")}\`\nSaknas en klass? Skriv till lärare.`)
 }
 
 /**
  * @param {Message} msg The message to access server data.
  */
 function HJÄLP(msg) {
-    msg.channel.send(fs.readFileSync('help.md', { encoding: 'utf-8' }))
+    msg.member.send(`${fs.readFileSync('help.md', { encoding: 'utf-8' })}\n${msg.member.user}`)
+    msg.deletable ? msg.delete() : null
 } 
 
 

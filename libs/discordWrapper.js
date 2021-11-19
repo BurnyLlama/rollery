@@ -1,4 +1,6 @@
-import { Guild } from 'discord.js'
+import { Guild, Message } from 'discord.js'
+
+const ADMIN_ROLE = "Lärare"
 
 /**
  * @param {Guild} server The server object on which to act.
@@ -24,4 +26,18 @@ export function aggregateUsers(server, patterns) {
                 )
         }
     )
+}
+
+/**
+ * Check if a message was sent by an admin. The function will automatically send a message informing the user!
+ * @param {Message} msg The message to check if the user is admin of.
+ * @returns {boolean} Boolean that shows whether user is admin.
+ */
+export function isAdmin(msg) {
+    if (!msg.member.roles.cache.some(role => role.name === ADMIN_ROLE)) {
+        msg.channel.send(`:no_entry: **ERROR:** Du har inte privilegie att köra \`${msg.content}\`! ${msg.member.user} ${msg.guild.roles.cache.find(role => role.name === ADMIN_ROLE)}`)
+        msg.deletable ? msg.delete() : null
+        return false
+    }
+    return true
 }

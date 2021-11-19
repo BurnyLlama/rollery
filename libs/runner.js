@@ -13,7 +13,8 @@ export default function runner(statement, msg) {
     const input = statement.map(e => e.type).join("-")
 
     if (input !== recipe) {
-        msg.reply(`:bulb: Kommandot \`${command}\` används: \`${MAN_PAGES[command]}\``)
+        msg.member.send(`:bulb: Kommandot \`${command}\` används: \`${MAN_PAGES[command]}\``)
+        msg.deletable ? msg.delete() : null
         return
     }
 
