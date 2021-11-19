@@ -1,4 +1,5 @@
 import createToken from './createToken.js'
+import makeGroup from './makeGroup.js'
 import { ALIASES, WORDS } from './rules.js'
 
 /**
@@ -31,6 +32,13 @@ export default function parser(tokens, errorCallback) {
         if (token.type === 'STR') {
             statement.push(createToken('PARAM', [token.value]))
             ++cursor
+            continue
+        }
+
+        if (token.type === 'GROUP_BEGIN') {
+            const { group, curPos } = makeGroup(tokens, cursor)
+            statement.push(createToken('PARAM', group))
+            cursor = curPos + 2
             continue
         }
 

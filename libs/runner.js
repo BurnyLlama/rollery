@@ -13,7 +13,7 @@ export default function runner(statement, msg) {
     const input = statement.map(e => e.type).join("-")
 
     if (input !== recipe) {
-        msg.reply(`:octagonal_sign: **ERROR:** Det verkar som att du använde kommandot fel...\n\n:thinking: Kommandot ${command} används: ${MAN_PAGES[command]}`)
+        msg.reply(`:bulb: Kommandot \`${command}\` används: \`${MAN_PAGES[command]}\``)
         return
     }
 
