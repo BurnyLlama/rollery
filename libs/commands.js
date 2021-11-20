@@ -111,29 +111,6 @@ function MOTIVERA(msg) {
 
 /**
  * @param {Message} msg The message to access server data.
- * @param {null} _ There's no action.
- * @param {Array} params The params to be used.
- */
-function KLASS(msg, _, params) {
-    const [ code, name ] = params
-
-    const data = vault.open()
-    if (!data.classes[code])
-        return msg.channel.send(`:warning: **ERROR:** Klassen ${code} finns inte! Välj någon av: \`${Object.keys(data.classes ?? {}).join("\`, \`")}\``)
-
-    msg.member.setNickname(`${name} ${code}`)
-    for (const role of data.classes[code]) {
-        if (!msg.guild.roles.cache.some(e => e.name === role)) {
-            continue
-        }
-        msg.member.roles.add(msg.guild.roles.cache.find(r => r.name === role))
-    }
-
-    msg.reply(`Välkommen ${name}! Du har tillgång till: \`${data.classes[code].join("\`, \`")}\`\nSaknas en klass? Skriv till lärare.`)
-}
-
-/**
- * @param {Message} msg The message to access server data.
  */
 function HJÄLP(msg) {
     msg.member.send(`${fs.readFileSync('help.md', { encoding: 'utf-8' })}\n${msg.member.user}`)
@@ -146,6 +123,5 @@ function HJÄLP(msg) {
 export default {
     ROLLER,
     MOTIVERA,
-    KLASS,
     HJÄLP,
 }

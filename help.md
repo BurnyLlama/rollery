@@ -1,9 +1,8 @@
-**ROLLERY - GUIDE**
+**HJÄLPIS - GUIDE**
 
 **Kommandon:**
 :question: `HJÄLP` [`HELP`, `MANUAL`, `?`] - Visar denna hjälp.
 :busts_in_silhouette: `ROLLER` [`ROLL`, `ROLE`, `ROLES`, `R`] - Används för att ge eller ta ifrån roller. :triangular_flag_on_post:
-:school: `KLASS` [`CLASS`, `K`, `C`] - Används för att gå med i din klass.
 :performing_arts: `MOTIVERA` [`MOTIVATE`, `M`]- Skickar ett motiverande citat till dig. :D
 :game_die: `SLUMP` - Används för olika slump-generatorer.
 

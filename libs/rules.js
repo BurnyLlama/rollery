@@ -27,10 +27,6 @@ export const ALIASES = {
     'MOTIVATE': 'MOTIVERA',
     'M': 'MOTIVERA',
 
-    'K': 'KLASS',
-    'CLASS': 'KLASS',
-    'C': 'KLASS',
-
     'HELP': 'HJÄLP',
     'MANUAL': 'HJÄLP',
     '?': 'HJÄLP',
@@ -42,7 +38,6 @@ export const WORDS = {
     'ROLLER':   'KEY_WORD',
     'HJÄLP':    'KEY_WORD',
     'MOTIVERA': 'KEY_WORD',
-    'KLASS':    'KEY_WORD',
 
     'GE':       'ACTION_WORD',
     'TA':       'ACTION_WORD',
@@ -56,12 +51,10 @@ export const RECIPES = {
     'ROLLER':   ['KEY_WORD', 'ACTION_WORD', 'PARAM', 'PARAM'],
     'HJÄLP':    ['KEY_WORD'],
     'MOTIVERA': ['KEY_WORD'],
-    'KLASS':    ['KEY_WORD', 'PARAM', 'PARAM'],
 }
 
 export const MAN_PAGES = {
     'ROLLER':   "ROLLER <GE | TA | TILLDELA | AVSKAFFA> <'Klasskod' | ('Klasskoder')> <'Roll' | ('Roller')>",
     'HJÄLP':    "HJÄLP",
     'MOTIVERA': "MOTIVERA",
-    'KLASS':    "KLASS 'Klasskod' 'Förnamn Efternamn'",
 }
