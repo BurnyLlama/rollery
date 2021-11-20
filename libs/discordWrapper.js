@@ -47,11 +47,37 @@ export function isAdmin(msg) {
  * @param {Message} msg The message to check channelType of.
  * @returns {boolean} Boolean that shows whether user is admin.
  */
- export function isDMs(msg) {
+export function isDMs(msg) {
     if (msg.channel.type !== "GUILD_TEXT") {
         msg.author.send(`:warning: **ERROR:** Det här kommandot kräver att du är på en server!`)
         msg.deletable ? msg.delete() : null
         return true
     }
     return false
+}
+
+/**
+ * A function that checks which roles exists from an array, and returns the existing ones.
+ * @param {Message} msg The message to check channelType of.
+ * @param {Array} roles The roles to check.
+ * @returns {Array} Array containing the existing roles..
+ */
+export function existingRoles(msg, roles) {
+    let out = []
+
+    for (const role of roles) {
+        if (!msg.guild.roles.cache.some(r => r.name === role)) {
+            msg.channel.send(`:warning: **Varning:** Rollen \`${role}\` finns inte! (Om du spefierade andra roller så proceseras de ändå.)`)
+            continue
+        }
+
+        out.push(role)
+    }
+
+    if (!out[0]) {
+        msg.reply(":warning: Du specifierade inga existerande roller!")
+        return [ undefined ]
+    }
+
+    return out
 }
