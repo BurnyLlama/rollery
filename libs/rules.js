@@ -11,19 +11,24 @@ export const TYPES = {
 }
 
 export const ALIASES = {
-    'R':        'ROLLER',
     'ROLL':     'ROLLER',
     'ROLES':    'ROLLER',
     'ROLE':     'ROLLER',
+    'R':        'ROLLER',
 
     'GIVE':     'GE',
     'GV':       'GE',
-    'UNGIVE':   'TA',
+
     'TAKE':     'TA',
-    'DELETE':   'TA',
-    'DEL':      'TA',
-    'REOVE':    'TA',
-    'RM':       'TA',
+    'TK':       'TA',
+
+    'GRANT':    'TILLDELA',
+    'GR':       'TILLDELA',
+    'TD':       'TILLDELA',
+
+    'REVOKE':   'AVSKAFFA',
+    'RV':       'AVSKAFFA',
+    'AS':       'AVSKAFFA',
 
     'LIST':     'LISTA',
     'LS':       'LISTA',
