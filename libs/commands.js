@@ -1,7 +1,7 @@
 import { Message } from 'discord.js'
 import fs from 'fs'
 import https from 'https'
-import { aggregateUsers, isAdmin } from './discordWrapper.js'
+import { aggregateUsers, isAdmin, isDMs } from './discordWrapper.js'
 import vault from './vault.js'
 
 /**
@@ -10,6 +10,7 @@ import vault from './vault.js'
  * @param {Array} params The params to be used.
  */
 function ROLLER(msg, action, params) {
+    if (isDMs(msg)) return "Is DMs."
     if (!isAdmin(msg)) return "Not admin."
 
     switch (action) {
@@ -103,8 +104,8 @@ function MOTIVERA(msg) {
 
         res.on('end', () => {
             const quote = JSON.parse(data)
-            msg.member.send(`> ${quote[0].q}\n-- ${quote[0].a}`)
-            msg.delete()
+            msg.author.send(`> ${quote[0].q}\n-- ${quote[0].a}`)
+            msg.deletable ? msg.delete() : null
         })
     })
 }
@@ -113,7 +114,7 @@ function MOTIVERA(msg) {
  * @param {Message} msg The message to access server data.
  */
 function HJÄLP(msg) {
-    msg.member.send(`${fs.readFileSync('help.md', { encoding: 'utf-8' })}\n${msg.member.user}`)
+    msg.author.send(`${fs.readFileSync('help.md', { encoding: 'utf-8' })}\n${msg.author}`)
     msg.deletable ? msg.delete() : null
 } 
 

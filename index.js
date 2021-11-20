@@ -44,10 +44,13 @@ function debug(msg, action) {
 
 
 client.on('messageCreate', msg => {
+    if (msg.author.tag === client.user.tag)
+        return "Bot's own message."
+
     if (msg.content.startsWith("DEBUG") && DEBUG_MODE)
         return debug(msg, msg.content.split(" ")[1])
 
-    const isCommand = msg.toString().startsWith(CMD_PREFIX) && msg.channel.type === "GUILD_TEXT"
+    const isCommand = msg.toString().startsWith(CMD_PREFIX) || msg.channel.type === 'DM'
     if (!isCommand) return "Not a command!"
 
     const rawMsg = msg.toString()                                   // *- I don't see why I couldn't combine these regexes... :/

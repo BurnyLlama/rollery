@@ -8,6 +8,9 @@ import { MAN_PAGES, RECIPES } from './rules.js'
  * @param {Message} msg The message sent so as to be able to access channels.
  */
 export default function runner(statement, msg) {
+    if (statement[0].type !== 'KEY_WORD')
+        return msg.reply(`:bulb: Första ordet ska vara ett kommando! Använd \`HJÄLP\`-kommandot för att se alla kommandon.`)
+
     const command = statement[0].value
     const recipe = RECIPES[command].join("-")
     const input = statement.map(e => e.type).join("-")

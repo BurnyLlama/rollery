@@ -41,3 +41,17 @@ export function isAdmin(msg) {
     }
     return true
 }
+
+/**
+ * Check if a message was sent in DMs. The function will automatically send a message informing the user!
+ * @param {Message} msg The message to check channelType of.
+ * @returns {boolean} Boolean that shows whether user is admin.
+ */
+ export function isDMs(msg) {
+    if (msg.channel.type !== "GUILD_TEXT") {
+        msg.author.send(`:warning: **ERROR:** Det här kommandot kräver att du är på en server!`)
+        msg.deletable ? msg.delete() : null
+        return true
+    }
+    return false
+}
