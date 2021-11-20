@@ -96,6 +96,16 @@ function ROLLER(msg, action, params) {
             }
             break
 
+        case 'LISTA':
+            const data = vault.open()
+            let message = ":information_source: Du har följande regler definierade:"
+
+            for (const rule in data.classes)
+                message += `\n\`${rule}\` som innefattar rollerna:\n\`\`\`${data.classes[rule].join(", ")}\n\`\`\``
+
+            msg.channel.send(message)
+            break
+
         default:
             break
     }
@@ -112,7 +122,6 @@ function ROLLER(msg, action, params) {
 
     https.get(
         attachment.url,
-        // 'https://cdn.discordapp.com/attachments/910920254757171200/911671597381869578/discord_bot_-_ALLA.csv',
         res => {
             let csv = ""
 

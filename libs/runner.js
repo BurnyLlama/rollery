@@ -12,11 +12,11 @@ export default function runner(statement, msg) {
         return msg.reply(`:bulb: Första ordet ska vara ett kommando! Använd \`HJÄLP\`-kommandot för att se alla kommandon.`)
 
     const command = statement[0].value
-    const recipe = RECIPES[command].join("-")
-    const input = statement.map(e => e.type).join("-")
+    const recipe = new RegExp(`^${RECIPES[command]}$`)
+    const input = statement.map(e => e.type).join(" ")
 
-    if (input !== recipe) {
-        msg.member.send(`:bulb: Kommandot \`${command}\` används: \`${MAN_PAGES[command]}\``)
+    if (!input.match(recipe)) {
+        msg.reply(`:bulb: Kommandot \`${command}\` används: \`${MAN_PAGES[command]}\``)
         msg.deletable ? msg.delete() : null
         return
     }

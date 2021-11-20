@@ -25,6 +25,9 @@ export const ALIASES = {
     'REOVE':    'TA',
     'RM':       'TA',
 
+    'LIST':     'LISTA',
+    'LS':       'LISTA',
+
     'MOTIVATE': 'MOTIVERA',
     'M':        'MOTIVERA',
 
@@ -46,19 +49,20 @@ export const WORDS = {
     'TA':           'ACTION_WORD',
     'TILLDELA':     'ACTION_WORD',
     'AVSKAFFA':     'ACTION_WORD',
+    'LISTA':        'ACTION_WORD',
 
     'ALLA':         'SELECT_ALL',
 }
 
 export const RECIPES = {
-    'ROLLER':       ['KEY_WORD', 'ACTION_WORD', 'PARAM', 'PARAM'],
-    'HJÄLP':        ['KEY_WORD'],
-    'MOTIVERA':     ['KEY_WORD'],
-    'IMPORTERA':    ['KEY_WORD'],
+    'ROLLER':       'KEY_WORD ACTION_WORD ?(PARAM|) ?(PARAM|)',
+    'HJÄLP':        'KEY_WORD',
+    'MOTIVERA':     'KEY_WORD',
+    'IMPORTERA':    'KEY_WORD',
 }
 
 export const MAN_PAGES = {
-    'ROLLER':       "ROLLER <GE | TA | TILLDELA | AVSKAFFA> <'Klasskod' | ('Klasskoder')> <'Roll' | ('Roller')>",
+    'ROLLER':       "ROLLER <GE | TA | TILLDELA | AVSKAFFA | LISTA> <'Klasskod' | ('Klasskoder')> <'Roll' | ('Roller')>",
     'HJÄLP':        "HJÄLP",
     'MOTIVERA':     "MOTIVERA",
     'IMPORTERA':    "IMPORTERA",
