@@ -1,7 +1,7 @@
-import { Message } from 'discord.js'
+import { Message, MessageEmbed } from 'discord.js'
 import fs from 'fs'
-import https from 'https'
 import { aggregateUsers, existingRoles, isAdmin, isDMs } from './discordWrapper.js'
+import fetch from './fetch.js'
 import vault from './vault.js'
 
 /**
@@ -120,57 +120,106 @@ function ROLLER(msg, action, params) {
     const attachment = msg.attachments.first()
     if (!attachment) return msg.reply(":bulb: Du behöver bifoga en CSV-fil med klasserna du vill importera!")
 
-    https.get(
-        attachment.url,
-        res => {
-            let csv = ""
+    fetch(attachment.url, false).then(
+        csv => {
+            const [ names, ...rest ] = csv.split(/[\r\n]+/)
+            const keys = names.split(',')
+            const rows = rest.map(e => e.split(','))
+            let rules = {}
 
-            res.on('data', data => csv += data)
+            for (const key of keys)
+                rules[key] = []
 
-            res.on(
-                'end',
-                () => {
-                    const [ names, ...rest ] = csv.split(/[\r\n]+/)
-                    const keys = names.split(',')
-                    const rows = rest.map(e => e.split(','))
-                    let rules = {}
+            for (const row of rows)
+                for (const i in row)
+                    row[i] ? rules[keys[i]].push(row[i]) : null
 
-                    for (const key of keys)
-                        rules[key] = []
-
-                    for (const row of rows)
-                        for (const i in row)
-                            row[i] ? rules[keys[i]].push(row[i]) : null
-
-                    for (const rule in rules)
-                        rules[rule][0] ? ROLLER(msg, 'TILLDELA', [ [ rule ], rules[rule] ]) : null
-                }
-            )
+            for (const rule in rules)
+                rules[rule][0] ? ROLLER(msg, 'TILLDELA', [ [ rule ], rules[rule] ]) : null
         }
     )
 }
 
 /**
  * @param {Message} msg The message to access server data.
+ * @param {string} action The action to perform.
+ * @param {Array} params The params to be used.
  */
-function MOTIVERA(msg) {
-    https.get(
-        "https://zenquotes.io/api/random",
-        res => {
-            let data = ""
-
-            res.on('data', fragment => data += fragment)
-
-            res.on(
-                'end',
-                () => {
-                    const quote = JSON.parse(data)
+function KUL(msg, action, params) {
+    switch (action) {
+        case 'MOTIVERA':
+            fetch("https://zenquotes.io/api/random", true).then(
+                quote => {
                     msg.author.send(`> ${quote[0].q}\n-- ${quote[0].a}`)
                     msg.deletable ? msg.delete() : null
                 }
             )
-        }
-    )
+            break
+
+        case 'PAPPASKÄMT':
+            fetch("https://icanhazdadjoke.com/", true, {'Accept': 'application/json'}).then(
+                dadJoke => {
+                    msg.author.send(`${dadJoke.joke}\n:joy:`)
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        case 'FAKTA':
+            fetch("https://uselessfacts.jsph.pl/random.json?language=en", true).then(
+                fact => {
+                    msg.author.send(`${fact.text}\n\nSource: ${fact.source_url}`)
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        case 'LYRICS':
+            const artist = params[0]
+            const song = params[1]
+            if (!params || !artist || !song)
+                return msg.reply("Du måste specifiera en artist och en sång: `KUL LYRICS 'artist' 'sång'`")
+
+            fetch(`https://api.lyrics.ovh/v1/${artist}/${song}`, true).then(
+                lyrics => {
+                    if (lyrics.error)
+                        return msg.reply(`:frowning: Hittade inte \`${song}\` av \`${artist}\`!`)
+
+                    if (lyrics.lyrics.length > 2000) {
+                        msg.author.send(`:musical_note: ${artist} - ${song}`)
+                        for (let i = 0; i < lyrics.lyrics.length / 2000; ++i)
+                            msg.author.send(`\`\`\`${lyrics.lyrics.substring(i * 2000, (i + 1) * 2000).replace(/Paroles de la chanson[\w\s]*$/gm, "")}\n\`\`\``)
+                    } else {
+                        msg.author.send(`:musical_note: ${artist} - ${song}\n\`\`\`\n${lyrics.lyrics.replace(/Paroles de la chanson[\w\s]*$/gm, "")}\n\`\`\``)
+                    }
+
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        case 'DIKT':
+            fetch(`https://poetrydb.org/linecount,random/${Math.round(Math.random() * 16 + 8)};1`, true).then(
+                poems => {
+                    const poem = poems[0]
+                    msg.author.send(`> ${poem.lines.join("\n> ")}\n\n*${poem.title}* by ${poem.author}\n\n`)
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        case 'PIXLAR': case 'NOISE':
+            fetch(`https://php-noise.com/noise.php?hex=${params[0] ?? ''}&borderWidth=${action === 'NOISE' ? '15' : '0'}&tiles=50&tileSize=20&json`, true).then(
+                data => {
+                    msg.author.send({ files: [data.uri] })
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        default:
+            break
+    }
 }
 
 /**
@@ -187,6 +236,6 @@ function HJÄLP(msg) {
 export default {
     ROLLER,
     IMPORTERA,
-    MOTIVERA,
+    KUL,
     HJÄLP,
 }
