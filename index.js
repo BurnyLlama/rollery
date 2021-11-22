@@ -1,9 +1,10 @@
 import { config as loadEnv } from 'dotenv'
-import { Client, Message } from 'discord.js'
+import { Client, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'
 import lexer from './libs/lexer.js'
 import parser from './libs/parser.js'
 import runner from './libs/runner.js'
 import vault from './libs/vault.js'
+import profanityFilter from './libs/profanity.js'
 
 
 loadEnv()
@@ -29,7 +30,6 @@ const client = new Client({
  * @param {Message} msg
  */
 function debug(msg, action) {
-    console.dir(action)
     switch (action) {
         case "JOIN":
             client.emit("guildMemberAdd", msg.member)
@@ -44,6 +44,8 @@ function debug(msg, action) {
 
 
 client.on('messageCreate', msg => {
+    profanityFilter(msg, client)
+
     if (msg.author.tag === client.user.tag)
         return "Bot's own message."
 
@@ -57,10 +59,10 @@ client.on('messageCreate', msg => {
     const command = rawMsg.replace(RegExp(`^${CMD_PREFIX}`), "").replace(/^\s*/g, "")
 
     const tokens = lexer(command, err => msg.channel.send(err))
-    if (!tokens[0]) return console.log("Error while lexing...")
+    if (!tokens[0]) return "Error while lexing..."
 
     const statement = parser(tokens, err => msg.channel.send(err))
-    if (!statement[0]) return console.log("Error while parsing...")
+    if (!statement[0]) return "Error while parsing..."
 
     runner(statement, msg)
 })
@@ -69,27 +71,25 @@ client.on(
     'guildMemberAdd',
     member => {
         member.user.send(`Välkommen ${member.user}!\nVänligen välj en klass genom att skriva \`KLASSKOD Namn Efternamn\`. Ex: \`SY20 Fred Fredriksson\``)
+
         const listener = msg => {
             if (msg.author.tag === member.user.tag) {
                 const [ code, ...nameComponents ] = msg.content.split(" ")
                 const name = nameComponents.join(" ")
 
-                console.log({ code, name })
                 const data = vault.open()
                 if (!data.classes[code])
                     return msg.reply(`:warning: **ERROR:** Klassen ${code} finns inte! Välj någon av: \`${Object.keys(data.classes ?? {}).join("\`, \`")}\``)
 
                 member.setNickname(`${name} ${code}`)
                 for (const role of data.classes[code]) {
-                    if (!member.guild.roles.cache.some(e => e.name === role)) {
-                        console.log({ skipped: role})
+                    if (!member.guild.roles.cache.some(e => e.name === role))
                         continue
-                    }
-                    member.roles.add(member.guild.roles.cache.find(r => r.name === role))
-                    console.log({ added: role})
-                }
-                member.roles.add(member.guild.roles.cache.find(r => r.name === "Elever"))
 
+                    member.roles.add(member.guild.roles.cache.find(r => r.name === role))
+                }
+
+                member.roles.add(member.guild.roles.cache.find(r => r.name === "Elever"))
                 member.send(`Välkommen ${name}! Du har tillgång till: \`${data.classes[code].join("\`, \`")}\`\nSaknas en klass? Skriv till din lärare eller IT-admin.\n${member.user}`)
                 client.removeListener('messageCreate', listener)
             }
@@ -101,4 +101,4 @@ client.on(
 
 
 client.login(process.env.TOKEN)
-client.on('ready', () => console.log(`I am in! //${client.user.tag}`))
+client.on('ready', () => console.log(`Connected as ${client.user.tag}`))

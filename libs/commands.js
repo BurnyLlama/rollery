@@ -113,31 +113,54 @@ function ROLLER(msg, action, params) {
 
 /**
  * @param {Message} msg The message to access server data.
+ * @param {string} action The action to perform.
  */
- function IMPORTERA(msg) {
+function IMPORTERA(msg, action) {
     if (isDMs(msg)) return "Is DMs."
     if (!isAdmin(msg)) return "Not admin."
+
     const attachment = msg.attachments.first()
     if (!attachment) return msg.reply(":bulb: Du behöver bifoga en CSV-fil med klasserna du vill importera!")
 
-    fetch(attachment.url, false).then(
-        csv => {
-            const [ names, ...rest ] = csv.split(/[\r\n]+/)
-            const keys = names.split(',')
-            const rows = rest.map(e => e.split(','))
-            let rules = {}
+    switch (action) {
+        case 'REGLER':
+            fetch(attachment.url, false).then(
+                csv => {
+                    const [ names, ...rest ] = csv.split(/[\r\n]+/)
+                    const keys = names.split(',')
+                    const rows = rest.map(e => e.split(','))
+                    let rules = {}
+        
+                    for (const key of keys)
+                        rules[key] = []
+        
+                    for (const row of rows)
+                        for (const i in row)
+                            row[i] ? rules[keys[i]].push(row[i]) : null
+        
+                    for (const rule in rules)
+                        rules[rule][0] ? ROLLER(msg, 'TILLDELA', [ [ rule ], rules[rule] ]) : null
+                }
+            )
+            break
 
-            for (const key of keys)
-                rules[key] = []
+        case 'FILTER':
+            fetch(attachment.url, false).then(
+                list => {
+                    let data = vault.open()
+                    data.badWords = `(${list.replace(/[\r\n]+/g, "|")})`.split("").join("\\s*(.|\\w)?\\s*")
+                    data.badWordsList = list.replace(/[\r\n]+/g, "; ")
+                    vault.save(data)
 
-            for (const row of rows)
-                for (const i in row)
-                    row[i] ? rules[keys[i]].push(row[i]) : null
+                    msg.channel.send(`Importerade ny filter-lista. Den är:\n\`\`\`${list.replace(/[\r\n]+/g, "; ")}\`\`\``)
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
 
-            for (const rule in rules)
-                rules[rule][0] ? ROLLER(msg, 'TILLDELA', [ [ rule ], rules[rule] ]) : null
-        }
-    )
+        default:
+            break
+    }
 }
 
 /**
@@ -212,6 +235,15 @@ function KUL(msg, action, params) {
             fetch(`https://php-noise.com/noise.php?hex=${params[0] ?? ''}&borderWidth=${action === 'NOISE' ? '15' : '0'}&tiles=50&tileSize=20&json`, true).then(
                 data => {
                     msg.author.send({ files: [data.uri] })
+                    msg.deletable ? msg.delete() : null
+                }
+            )
+            break
+
+        case 'FÄRG':
+            fetch(`http://colormind.io/api/'`, false).then(
+                data => {
+                    msg.author.send(data)
                     msg.deletable ? msg.delete() : null
                 }
             )
