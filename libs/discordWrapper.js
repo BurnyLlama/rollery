@@ -48,11 +48,12 @@ export function isAdmin(msg) {
  * @returns {boolean} Boolean that shows whether user is admin.
  */
 export function isDMs(msg) {
-    if (msg.channel.type !== "GUILD_TEXT") {
+    if (msg.channel.type === 'DM') {
         msg.author.send(`:warning: **ERROR:** Det här kommandot kräver att du är på en server!`)
         msg.deletable ? msg.delete() : null
         return true
     }
+
     return false
 }
 

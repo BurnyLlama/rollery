@@ -148,7 +148,7 @@ function IMPORTERA(msg, action) {
             fetch(attachment.url, false).then(
                 list => {
                     let data = vault.open()
-                    data.badWords = `(${list.replace(/[\r\n]+/g, "|")})`.split("").join("\\s*(.|\\w)?\\s*")
+                    data.badWords = `(${list.replace(/[\r\n]+/g, "|")})`.replace(/\w(?![\|\)])/g, "$&\\s*(.|\\w)?\\s*")
                     data.badWordsList = list.replace(/[\r\n]+/g, "; ")
                     vault.save(data)
 
@@ -208,10 +208,10 @@ function KUL(msg, action, params) {
                     if (lyrics.error)
                         return msg.reply(`:frowning: Hittade inte \`${song}\` av \`${artist}\`!`)
 
-                    if (lyrics.lyrics.length > 2000) {
+                    if (lyrics.lyrics.length > 1500) {
                         msg.author.send(`:musical_note: ${artist} - ${song}`)
-                        for (let i = 0; i < lyrics.lyrics.length / 2000; ++i)
-                            msg.author.send(`\`\`\`${lyrics.lyrics.substring(i * 2000, (i + 1) * 2000).replace(/Paroles de la chanson[\w\s]*$/gm, "")}\n\`\`\``)
+                        for (let i = 0; i < lyrics.lyrics.length / 1500; ++i)
+                            msg.author.send(`\`\`\`${lyrics.lyrics.substring(i * 1500, (i + 1) * 1500).replace(/Paroles de la chanson[\w\s]*$/gm, "")}\n\`\`\``)
                     } else {
                         msg.author.send(`:musical_note: ${artist} - ${song}\n\`\`\`\n${lyrics.lyrics.replace(/Paroles de la chanson[\w\s]*$/gm, "")}\n\`\`\``)
                     }
