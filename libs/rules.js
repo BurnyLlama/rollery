@@ -18,14 +18,12 @@ export const ALIASES = {
 
     'GIVE':     'GE',
     'GV':       'GE',
-
     'TAKE':     'TA',
     'TK':       'TA',
 
     'GRANT':    'TILLDELA',
     'GR':       'TILLDELA',
     'TD':       'TILLDELA',
-
     'REVOKE':   'AVSKAFFA',
     'RV':       'AVSKAFFA',
     'AS':       'AVSKAFFA',
@@ -33,20 +31,34 @@ export const ALIASES = {
     'LIST':     'LISTA',
     'LS':       'LISTA',
 
-    'MOTIVATE': 'MOTIVERA',
-    'M':        'MOTIVERA',
+
 
     'IMPORT':   'IMPORTERA',
     'I':        'IMPORTERA',
-
     'EXPORT':   'EXPORTERA',
     'E':        'EXPORTERA',
 
     'RULES':    'REGLER',
 
+
+
+    'FUN':      'KUL',
+    'F':        'KUL',
+    'K':        'KUL',
+
+    'MOTIVATE': 'MOTIVERA',
+    'DADJOKE':  'PAPPASKÄMT',
+    'FACT':     'FAKTA',
+    'PIXLES':   'PIXLAR',
+    'POEM':     'DIKT',
+
+
+
     'HELP':     'HJÄLP',
     'MANUAL':   'HJÄLP',
     '?':        'HJÄLP',
+
+
 
     'ALL':      'ALLA',
     '*':        'ALLA',
@@ -95,5 +107,5 @@ export const MAN_PAGES = {
     'HJÄLP':        "HJÄLP",
     'KUL':          "KUL <PAPPASKÄMT | MOTIVERA | DIKT | LYRICS | FAKTA |PIXLAR | NOISE>",
     'IMPORTERA':    "IMPORTERA <FILTER | REGLER>",
-    'IMPORTERA':    "EXPORTERA",
+    'EXPORTERA':    "EXPORTERA",
 }
