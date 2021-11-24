@@ -36,6 +36,14 @@ export const ALIASES = {
     'MOTIVATE': 'MOTIVERA',
     'M':        'MOTIVERA',
 
+    'IMPORT':   'IMPORTERA',
+    'I':        'IMPORTERA',
+
+    'EXPORT':   'EXPORTERA',
+    'E':        'EXPORTERA',
+
+    'RULES':    'REGLER',
+
     'HELP':     'HJÄLP',
     'MANUAL':   'HJÄLP',
     '?':        'HJÄLP',
@@ -49,6 +57,7 @@ export const WORDS = {
     'HJÄLP':        'KEY_WORD',
     'KUL':          'KEY_WORD',
     'IMPORTERA':    'KEY_WORD',
+    'EXPORTERA':    'KEY_WORD',
 
     'GE':           'ACTION_WORD',
     'TA':           'ACTION_WORD',
@@ -78,6 +87,7 @@ export const RECIPES = {
     'HJÄLP':        'KEY_WORD',
     'KUL':          'KEY_WORD ACTION_WORD ?(PARAM|) ?(PARAM|)',
     'IMPORTERA':    'KEY_WORD ACTION_WORD',
+    'EXPORTERA':    'KEY_WORD',
 }
 
 export const MAN_PAGES = {
@@ -85,4 +95,5 @@ export const MAN_PAGES = {
     'HJÄLP':        "HJÄLP",
     'KUL':          "KUL <PAPPASKÄMT | MOTIVERA | DIKT | LYRICS | FAKTA |PIXLAR | NOISE>",
     'IMPORTERA':    "IMPORTERA <FILTER | REGLER>",
+    'IMPORTERA':    "EXPORTERA",
 }

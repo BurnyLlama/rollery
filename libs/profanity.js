@@ -16,7 +16,6 @@ export default function profanityFilter(msg, client) {
     const badWords = vault.open().badWords
     const filter = new RegExp(badWords, "gi")
 
-    console.log({ badWords, filter })
     if (msg.content.match(filter))
         msg.channel.send(`Mitt filter är triggat!\n\n${msg.author} sade vid \`${msg.createdAt.toLocaleString()}\`:\n> ${msg.content.replace(filter, "**$&**")}\n\n${msg.guild.roles.cache.find(role => role.name === ADMIN_ROLE)}`)
 }

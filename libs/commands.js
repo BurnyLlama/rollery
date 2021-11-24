@@ -165,6 +165,49 @@ function IMPORTERA(msg, action) {
 
 /**
  * @param {Message} msg The message to access server data.
+ */
+function EXPORTERA(msg) {
+    if (isDMs(msg)) return "Is DMs."
+    if (!isAdmin(msg)) return "Not admin."
+
+    let members = {}
+
+    msg.guild.members.fetch().then(
+        guildMembers => {
+            for (const memberX of guildMembers) {
+                const member = memberX[1]
+                members[member.displayName] = member.roles.cache.filter(r => r.name !== "@everyone").map(r => r.name)
+            }
+
+            let lengths = []
+            Object.keys(members).forEach(name => lengths.push(members[name].length))
+            const length = Math.max(...lengths)
+
+            let csv = ""
+
+            const names = Object.keys(members)
+            for (const name of names)
+                csv += `${name},`
+
+            csv += "\n"
+
+            for (let i = 0; i < length; ++i) {
+                for (const name of names)
+                    csv += `${members[name][i] ? members[name][i] : ''},`
+                csv += "\n"
+            }
+
+            csv = csv.replace(/,\n/g, "\n")
+
+            fs.writeFileSync('./temp-csv-all-members-roles.csv', csv)
+            msg.author.send({ content: ":file_folder: Här är en export av alla medlemmar och deras roller!", files: ['./temp-csv-all-members-roles.csv'] })
+                .then(() => fs.unlinkSync('./temp-csv-all-members-roles.csv'))
+        }
+    )
+}
+
+/**
+ * @param {Message} msg The message to access server data.
  * @param {string} action The action to perform.
  * @param {Array} params The params to be used.
  */
@@ -268,6 +311,7 @@ function HJÄLP(msg) {
 export default {
     ROLLER,
     IMPORTERA,
+    EXPORTERA,
     KUL,
     HJÄLP,
 }
