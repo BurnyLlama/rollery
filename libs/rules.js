@@ -91,6 +91,9 @@ export const WORDS = {
     'FILTER':       'ACTION_WORD',
     'REGLER':       'ACTION_WORD',
 
+    'ANVÄNDARE':    'ACTION_WORD',
+    'KANAL':        'ACTION_WORD',
+
     'ALLA':         'SELECT_ALL',
 }
 
@@ -99,7 +102,7 @@ export const RECIPES = {
     'HJÄLP':        'KEY_WORD',
     'KUL':          'KEY_WORD ACTION_WORD ?(PARAM|) ?(PARAM|)',
     'IMPORTERA':    'KEY_WORD ACTION_WORD',
-    'EXPORTERA':    'KEY_WORD',
+    'EXPORTERA':    'KEY_WORD ACTION_WORD',
 }
 
 export const MAN_PAGES = {

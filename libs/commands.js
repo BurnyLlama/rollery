@@ -1,4 +1,5 @@
-import { Message, MessageEmbed } from 'discord.js'
+import { Message } from 'discord.js'
+import fetchAll from 'discord-fetch-all'
 import fs from 'fs'
 import { aggregateUsers, existingRoles, isAdmin, isDMs } from './discordWrapper.js'
 import fetch from './fetch.js'
@@ -165,45 +166,108 @@ function IMPORTERA(msg, action) {
 
 /**
  * @param {Message} msg The message to access server data.
+ * @param {string} action The action to perform.
  */
-function EXPORTERA(msg) {
+function EXPORTERA(msg, action) {
     if (isDMs(msg)) return "Is DMs."
     if (!isAdmin(msg)) return "Not admin."
 
     let members = {}
 
-    msg.guild.members.fetch().then(
-        guildMembers => {
-            for (const memberX of guildMembers) {
-                const member = memberX[1]
-                members[member.displayName] = member.roles.cache.filter(r => r.name !== "@everyone").map(r => r.name)
-            }
+    switch (action) {
+        case 'ANVÄNDARE':
+            msg.guild.members.fetch().then(
+                guildMembers => {
+                    for (const memberX of guildMembers) {
+                        const member = memberX[1]
+                        members[member.displayName] = member.roles.cache.filter(r => r.name !== "@everyone").map(r => r.name)
+                    }
 
-            let lengths = []
-            Object.keys(members).forEach(name => lengths.push(members[name].length))
-            const length = Math.max(...lengths)
+                    let lengths = []
+                    Object.keys(members).forEach(name => lengths.push(members[name].length))
+                    const length = Math.max(...lengths)
 
-            let csv = ""
+                    let csv = ""
 
-            const names = Object.keys(members)
-            for (const name of names)
-                csv += `${name},`
+                    const names = Object.keys(members)
+                    for (const name of names)
+                        csv += `${name},`
 
-            csv += "\n"
+                    csv += "\n"
 
-            for (let i = 0; i < length; ++i) {
-                for (const name of names)
-                    csv += `${members[name][i] ? members[name][i] : ''},`
-                csv += "\n"
-            }
+                    for (let i = 0; i < length; ++i) {
+                        for (const name of names)
+                            csv += `${members[name][i] ? members[name][i] : ''},`
+                        csv += "\n"
+                    }
 
-            csv = csv.replace(/,\n/g, "\n")
+                    csv = csv.replace(/,\n/g, "\n")
 
-            fs.writeFileSync('./temp-csv-all-members-roles.csv', csv)
-            msg.author.send({ content: ":file_folder: Här är en export av alla medlemmar och deras roller!", files: ['./temp-csv-all-members-roles.csv'] })
-                .then(() => fs.unlinkSync('./temp-csv-all-members-roles.csv'))
-        }
-    )
+                    fs.writeFileSync('./temp-csv-all-members-roles.csv', csv)
+                    msg.author.send({ content: ":file_folder: Här är en export av alla medlemmar och deras roller!", files: ['./temp-csv-all-members-roles.csv'] })
+                        .then(() => fs.unlinkSync('./temp-csv-all-members-roles.csv'))
+                }
+            )
+            break
+
+        // Have fun reading this case! =D
+        case 'KANAL':
+            fetchAll.messages(msg.channel, { reverseArray: true }).then(
+                messages => {
+                    msg.author.send({ content: ":file_folder: Har hämtat alla meddelanden... Konverterar till fil..."})
+
+                    let data = []
+                    const createMessage = async m => {
+                        const u = await msg.guild.members.fetch(m.author.id)
+                        const message = {
+                            author: u.displayName,
+                            color: u.displayHexColor,
+                            avatar: u.user.avatarURL(),
+                            date: m.createdAt,
+                            content: m.content,
+                        }
+                        data.push(message)
+                        console.dir({message}, {depth: null})
+                    }
+
+                    (() => new Promise(
+                        resolve => {
+                            let promises = []
+                            for (const m of messages)
+                                promises.push(createMessage(m))
+
+                            Promise.all(promises).then(
+                                msgs => {
+                                    resolve(msgs)
+                                }
+                            )
+                        }
+                    ))().then(
+                        () => {
+                            let html = ""
+                            for (const m of data)
+                                html += `<div class="message"><img src="${m.avatar}" class="avatar"><p class="author" style="color: ${m.color}">${m.author}</p><p class="date">${m.date.toLocaleString()}</p><p class="content">${m.content}</p></div>`
+        
+                            const template = fs.readFileSync('./templates/channel.html', { encoding: 'utf-8'})
+                            const render = template.replace(/__CHANNEL__/g, msg.channel.name).replace(/__MESSAGES__/g, html.replace(/\n/g, '<br>'))
+                            fs.writeFileSync(`./tmp-${msg.channel.name}.html`, render)
+        
+                            fs.writeFileSync(`./tmp-${msg.channel.name}.json`, JSON.stringify(data, null, 4))
+                            msg.author.send({ content: ":file_folder: Klar!", files: [`./tmp-${msg.channel.name}.html`, `./tmp-${msg.channel.name}.json`]})
+                                .then(() => {
+                                    fs.unlinkSync(`./tmp-${msg.channel.name}.html`)
+                                    fs.unlinkSync(`./tmp-${msg.channel.name}.json`)
+                                })
+                        }
+                    )
+                }
+            )
+            break
+
+        default:
+            break
+    }
+
 }
 
 /**
