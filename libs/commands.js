@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
 import fetchAll from 'discord-fetch-all'
 import fs from 'fs'
+import emoji from 'emoji-name-map'
 import { aggregateUsers, existingRoles, isAdmin, isDMs } from './discordWrapper.js'
 import fetch from './fetch.js'
 import vault from './vault.js'
@@ -212,9 +213,10 @@ function EXPORTERA(msg, action) {
 
         // Have fun reading this case! =D
         case 'KANAL':
+            msg.author.send(`:inbox_tray: Laddar ned alla meddelanden från \`${msg.channel.name}\`...`)
             fetchAll.messages(msg.channel, { reverseArray: true }).then(
                 messages => {
-                    msg.author.send({ content: ":file_folder: Har hämtat alla meddelanden... Konverterar till fil..."})
+                    msg.author.send(`:package: Har hämtat alla meddelanden från \`${msg.channel.name}\`! Konverterar till filer...`)
 
                     let data = []
                     const createMessage = async m => {
@@ -224,10 +226,9 @@ function EXPORTERA(msg, action) {
                             color: u.displayHexColor,
                             avatar: u.user.avatarURL(),
                             date: m.createdAt,
-                            content: m.content,
+                            content: m.content.replace(/:\w+?:/, match => emoji.get(match) ? emoji.get(match) : match),
                         }
                         data.push(message)
-                        console.dir({message}, {depth: null})
                     }
 
                     (() => new Promise(
@@ -244,19 +245,26 @@ function EXPORTERA(msg, action) {
                         }
                     ))().then(
                         () => {
+                            const msgs = data.sort((a, b) => a.date - b.date)
                             let html = ""
-                            for (const m of data)
-                                html += `<div class="message"><img src="${m.avatar}" class="avatar"><p class="author" style="color: ${m.color}">${m.author}</p><p class="date">${m.date.toLocaleString()}</p><p class="content">${m.content}</p></div>`
-        
+                            for (const m of msgs)
+                                html += `<div class="message"><img src="${m.avatar}" class="avatar"><p class="author" style="color: ${m.color}">${m.author}</p><p class="date">${m.date.toLocaleString()}</p><p class="content">${m.content.replace(/\n/g, '<br>')}</p></div>\n`
+
                             const template = fs.readFileSync('./templates/channel.html', { encoding: 'utf-8'})
-                            const render = template.replace(/__CHANNEL__/g, msg.channel.name).replace(/__MESSAGES__/g, html.replace(/\n/g, '<br>'))
-                            fs.writeFileSync(`./tmp-${msg.channel.name}.html`, render)
-        
-                            fs.writeFileSync(`./tmp-${msg.channel.name}.json`, JSON.stringify(data, null, 4))
-                            msg.author.send({ content: ":file_folder: Klar!", files: [`./tmp-${msg.channel.name}.html`, `./tmp-${msg.channel.name}.json`]})
-                                .then(() => {
-                                    fs.unlinkSync(`./tmp-${msg.channel.name}.html`)
-                                    fs.unlinkSync(`./tmp-${msg.channel.name}.json`)
+                            const render = template.replace(/__CHANNEL__/g, msg.channel.name).replace(/__MESSAGES__/g, html)
+
+                            fs.writeFileSync(`./${msg.channel.name}.html`, render)
+                            fs.writeFileSync(`./${msg.channel.name}.json`, JSON.stringify(msgs, null, 4))
+
+                            msg.author.send({
+                                    content: `:card_box: Klar med exporten av \`${msg.channel.name}\`! Här är dina filer:`,
+                                    files: [
+                                        `./${msg.channel.name}.html`,
+                                        `./${msg.channel.name}.json`
+                                    ]
+                                }).then(() => {
+                                    fs.unlinkSync(`./${msg.channel.name}.html`)
+                                    fs.unlinkSync(`./${msg.channel.name}.json`)
                                 })
                         }
                     )
