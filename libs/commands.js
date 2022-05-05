@@ -43,7 +43,7 @@ function ROLLER(msg, action, params) {
 
                     if (!roles[0]) return "No roles."
 
-                    for (const role of roles) 
+                    for (const role of roles)
                         for (const user of users) {
                             user.roles.remove(msg.guild.roles.cache.find(e => e.name === role))
                             operated = true
@@ -93,7 +93,7 @@ function ROLLER(msg, action, params) {
 
                     delete data.classes[classCode]
                 }
-    
+
                 vault.save(data)
             }
             break
@@ -132,14 +132,14 @@ function IMPORTERA(msg, action) {
                     const keys = names.split(',')
                     const rows = rest.map(e => e.split(','))
                     let rules = {}
-        
+
                     for (const key of keys)
                         rules[key] = []
-        
+
                     for (const row of rows)
                         for (const i in row)
                             row[i] ? rules[keys[i]].push(row[i]) : null
-        
+
                     for (const rule in rules)
                         rules[rule][0] ? ROLLER(msg, 'TILLDELA', [ [ rule ], rules[rule] ]) : null
                 }
@@ -355,14 +355,14 @@ function KUL(msg, action, params) {
             )
             break
 
-        case 'FÄRG':
-            fetch(`http://colormind.io/api/'`, false).then(
-                data => {
-                    msg.author.send(data)
-                    msg.deletable ? msg.delete() : null
-                }
-            )
-            break
+        //case 'FÄRG':
+        //    fetch(`https://colormind.io/api/'`, false).then(
+        //        data => {
+        //            msg.author.send(data)
+        //            msg.deletable ? msg.delete() : null
+        //        }
+        //    )
+        //    break
 
         default:
             break
@@ -375,7 +375,7 @@ function KUL(msg, action, params) {
 function HJÄLP(msg) {
     msg.author.send(`${fs.readFileSync('help.md', { encoding: 'utf-8' })}\n${msg.author}`)
     msg.deletable ? msg.delete() : null
-} 
+}
 
 
 

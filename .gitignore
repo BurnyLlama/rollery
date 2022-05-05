@@ -108,3 +108,4 @@ dist
 # My additions
 vault.json
 tmp*
+pnpm-lock.yaml
